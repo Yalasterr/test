@@ -145,7 +145,7 @@ echo -e "${YELLOW}Настраиваем Samba...${NC}"
 if ! grep -q "\[Public\]" /etc/samba/smb.conf; then
     cat <<EOL >> /etc/samba/smb.conf
 
-[PublicTest]
+[PublicTe]
    path = /PublicTe
    writable = yes
    browseable = yes
