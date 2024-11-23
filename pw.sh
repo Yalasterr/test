@@ -27,9 +27,9 @@ mkdir /PublicTe
 
 # 3. Создаём в Public три каталога: Protection, Doc и Buh
 echo -e "${YELLOW}Создаем подкаталоги в Public...${NC}"
-mkdir /PublicTe/Protection
-mkdir /PublicTe/Doc
-mkdir /PublicTe/Buh
+mkdir /PublicTe/ProtectionTe
+mkdir /PublicTe/DocTe
+mkdir /PublicTe/BuhTe
 
 # 4. Добавляем пользователей
 echo -e "${YELLOW}Добавляем пользователей director, sysadms, glavbuh...${NC}"
