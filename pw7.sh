@@ -23,13 +23,13 @@ fi
 
 # 2. Создаём каталог Public
 echo -e "${YELLOW}Создаем каталог Public...${NC}"
-mkdir /Public
+mkdir /PublicTest
 
 # 3. Создаём в Public три каталога: Protection, Doc и Buh
 echo -e "${YELLOW}Создаем подкаталоги в Public...${NC}"
-mkdir /Public/Protection
-mkdir /Public/Doc
-mkdir /Public/Buh
+mkdir /PublicTest/Protection
+mkdir /PublicTest/Doc
+mkdir /PublicTest/Buh
 
 # 4. Добавляем пользователей
 echo -e "${YELLOW}Добавляем пользователей director, sysadms, glavbuh...${NC}"
