@@ -64,8 +64,8 @@ fi
 # 5. Добавляем пользователей director и sysadms в группу best
 echo -e "${YELLOW}Создаем группу best и добавляем пользователей...${NC}"
 addgroup best
-usermod -aG best USERNAME1
-usermod -aG best USERNAME2
+usermod -aG best $USERNAME1
+usermod -aG best $USERNAME2
 
 ## 6. Для каталога Protection разрешаем доступ только пользователям группы best
 #echo -e "${YELLOW}Настраиваем права доступа для каталога Protection...${NC}"
