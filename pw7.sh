@@ -123,10 +123,10 @@ fi
 usermod -aG best $USERNAME1
 usermod -aG best $USERNAME2
 
-## 6. Для каталога Protection разрешаем доступ только пользователям группы best
-#echo -e "${YELLOW}Настраиваем права доступа для каталога Protection...${NC}"
-#chown :best /Public/Protection
-#chmod 770 /Public/Protection
+# 6. Для каталога Protection разрешаем доступ только пользователям группы best
+echo -e "${YELLOW}Настраиваем права доступа для каталога Protection...${NC}"
+chown :best /Public/Protection
+chmod 770 /Public/Protection
 
 ## 7. Для каталога Doc установить доступ всем пользователям на чтение и запись
 #echo -e "${YELLOW}Настраиваем права доступа для каталога Doc...${NC}"
