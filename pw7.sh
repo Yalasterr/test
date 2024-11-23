@@ -69,13 +69,13 @@ fi
 # ?. Добавляем пользователей в Samba
 echo -e "${YELLOW}Добавляем пользователей в Samba...${NC}"
 
-if id "$USERNAMESMB1" &>/dev/null; then
-    echo -e "${RED}Пользователь ${USERNAMESMB1} уже существует.${NC}"
-else
-    echo -e "${YELLOW}Введите пароль для пользователя ${USERNAMESMB1}:${NC}"
-    read -s PASSWORD
-    smbpasswd -a $USERNAMESMB1 $PASSWORD
-fi
+#if id "$USERNAMESMB1" &>/dev/null; then
+#    echo -e "${RED}Пользователь ${USERNAMESMB1} уже существует.${NC}"
+#else
+echo -e "${YELLOW}Введите пароль для пользователя ${USERNAMESMB1}:${NC}"
+read -s PASSWORD
+smbpasswd -a $USERNAMESMB1 $PASSWORD
+#fi
 
 if id "$USERNAMESMB2" &>/dev/null; then
     echo -e "${RED}Пользователь ${USERNAMESMB2} уже существует.${NC}"
