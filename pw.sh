@@ -23,19 +23,23 @@ fi
 
 # 2. Создаём каталог Public
 echo -e "${YELLOW}Создаем каталог Public...${NC}"
-mkdir /Public
+mkdir /PublicTe
 
 # 3. Создаём в Public три каталога: Protection, Doc и Buh
 echo -e "${YELLOW}Создаем подкаталоги в Public...${NC}"
-mkdir /Public/Protection
-mkdir /Public/Doc
-mkdir /Public/Buh
+mkdir /PublicTe/Protection
+mkdir /PublicTe/Doc
+mkdir /PublicTe/Buh
 
 # 4. Добавляем пользователей
 echo -e "${YELLOW}Добавляем пользователей director, sysadms, glavbuh...${NC}"
 USERNAME1="director"
 USERNAME2="sysadms"
 USERNAME3="glavbuh"
+
+USERNAMESMB1="director"
+USERNAMESMB2="sysadms"
+USERNAMESMB3="glavbuh"
 
 if id "$USERNAME1" &>/dev/null; then
     echo -e "${RED}Пользователь ${USERNAME1} уже существует.${NC}"
@@ -61,11 +65,63 @@ else
     useradd -m -p "$(openssl passwd -1 "$PASSWORD")" "$USERNAME3"
 fi
 
+
+# ?. Добавляем пользователей в Samba
+echo -e "${YELLOW}Добавляем пользователей в Samba...${NC}"
+
+#if id "$USERNAMESMB1" &>/dev/null; then
+#    echo -e "${RED}Пользователь ${USERNAMESMB1} уже существует.${NC}"
+#else
+#   echo -e "${YELLOW}Введите пароль для пользователя ${USERNAMESMB1}:${NC}"
+#   read -s PASSWORD
+#   smbpasswd -a $USERNAMESMB1 $PASSWORD
+#fi
+
+#if id "$USERNAMESMB2" &>/dev/null; then
+#    echo -e "${RED}Пользователь ${USERNAMESMB2} уже существует.${NC}"
+#else
+#    echo -e "${YELLOW}Введите пароль для пользователя ${USERNAMESMB2}:${NC}"
+#    read -s PASSWORD
+#    smbpasswd -a $USERNAMESMB2 $PASSWORD
+#fi
+
+#if id "$USERNAMESMB3" &>/dev/null; then
+#    echo -e "${RED}Пользователь ${USERNAMESMB3} уже существует.${NC}"
+#else
+#    echo -e "${YELLOW}Введите пароль для пользователя ${USERNAMESMB3}:${NC}"
+#    read -s PASSWORD
+#    smbpasswd -a $USERNAMESMB3 $PASSWORD
+#fi
+echo -e "${YELLOW}Введите пароль для пользователя ${USERNAMESMB1}:${NC}"
+read -s PASSWORD
+
+# Добавляем пользователя в Samba и передаем пароль через стандартный ввод
+(echo "$PASSWORD"; echo "$PASSWORD") | smbpasswd -a "$USERNAMESMB1"
+
+echo -e "${YELLOW}Введите пароль для пользователя ${USERNAMESMB2}:${NC}"
+read -s PASSWORD
+
+# Добавляем пользователя в Samba и передаем пароль через стандартный ввод
+(echo "$PASSWORD"; echo "$PASSWORD") | smbpasswd -a "$USERNAMESMB2"
+
+echo -e "${YELLOW}Введите пароль для пользователя ${USERNAMESMB3}:${NC}"
+read -s PASSWORD
+
+# Добавляем пользователя в Samba и передаем пароль через стандартный ввод
+(echo "$PASSWORD"; echo "$PASSWORD") | smbpasswd -a "$USERNAMESMB3"
+
 # 5. Добавляем пользователей director и sysadms в группу best
 echo -e "${YELLOW}Создаем группу best и добавляем пользователей...${NC}"
-addgroup best
-usermod -aG best director
-usermod -aG best sysadms
+
+if ! getent group best > /dev/null; then
+    echo -e "${YELLOW}Создаем группу best...${NC}"
+    addgroup best
+else
+    echo -e "${GREEN}Группа best уже существует.${NC}"
+fi
+
+usermod -aG best $USERNAME1
+usermod -aG best $USERNAME2
 
 ## 6. Для каталога Protection разрешаем доступ только пользователям группы best
 #echo -e "${YELLOW}Настраиваем права доступа для каталога Protection...${NC}"
@@ -73,7 +129,7 @@ usermod -aG best sysadms
 #chmod 770 /Public/Protection
 
 ## 7. Для каталога Doc установить доступ всем пользователям на чтение и запись
-#cho -e "${YELLOW}Настраиваем права доступа для каталога Doc...${NC}"
+#echo -e "${YELLOW}Настраиваем права доступа для каталога Doc...${NC}"
 #chmod 777 /Public/Doc
 
 ## 8. Для каталога Buh установить доступ пользователям glavbuh и sysadms
@@ -82,34 +138,58 @@ usermod -aG best sysadms
 #chmod 770 /Public/Buh
 #usermod -aG sysadms glavbuh
 
-## 9. Настройка Samba
-#echo -e "${YELLOW}Настраиваем Samba...${NC}"
-cat <<EOL >> /etc/samba/smb.conf
+# 9. Настройка Samba
+echo -e "${YELLOW}Настраиваем Samba...${NC}"
 
-[Public]
-   path = /Public
+# Проверяем, существует ли секция [Public] в smb.conf
+if ! grep -q "\[PublicTe\]" /etc/samba/smb.conf; then
+    cat <<EOL >> /etc/samba/smb.conf
+
+[PublicTe]
+   path = /PublicTe
    writable = yes
    browseable = yes
    guest ok = yes
+EOL
+fi
 
-[Protection]
-   path = /Public/Protection
+# Проверяем, существует ли секция [Protection] в smb.conf
+if ! grep -q "\[ProtectionTe\]" /etc/samba/smb.conf; then
+    cat <<EOL >> /etc/samba/smb.conf
+
+[ProtectionTe]
+   path = /PublicTe/ProtectionTe
    valid users = @best
    writable = yes
    browseable = yes
+   guest ok = no
+EOL
+fi
 
-[Doc]
-   path = /Public/Doc
+# Проверяем, существует ли секция [Doc] в smb.conf
+if ! grep -q "\[DocTe\]" /etc/samba/smb.conf; then
+    cat <<EOL >> /etc/samba/smb.conf
+
+[DocTe]
+   path = /PublicTe/DocTe
    writable = yes
    browseable = yes
    guest ok = yes
+EOL
+fi
 
-[Buh]
-   path = /Public/Buh
+# Проверяем, существует ли секция [Buh] в smb.conf
+if ! grep -q "\[BuhTe\]" /etc/samba/smb.conf; then
+    cat <<EOL >> /etc/samba/smb.conf
+
+[BuhTe]
+   path = /PublicTe/BuhTe
    valid users = glavbuh, sysadms
    writable = yes
    browseable = yes
+   guest ok = no
 EOL
+fi
 
 # 10. Перезапускаем Samba
 echo -e "${YELLOW}Перезапускаем Samba...${NC}"
