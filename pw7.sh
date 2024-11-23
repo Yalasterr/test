@@ -80,7 +80,7 @@ usermod -aG best $USERNAME2
 #chmod 770 /Public/Protection
 
 ## 7. Для каталога Doc установить доступ всем пользователям на чтение и запись
-#cho -e "${YELLOW}Настраиваем права доступа для каталога Doc...${NC}"
+#echo -e "${YELLOW}Настраиваем права доступа для каталога Doc...${NC}"
 #chmod 777 /Public/Doc
 
 ## 8. Для каталога Buh установить доступ пользователям glavbuh и sysadms
@@ -89,34 +89,58 @@ usermod -aG best $USERNAME2
 #chmod 770 /Public/Buh
 #usermod -aG sysadms glavbuh
 
-## 9. Настройка Samba
-#echo -e "${YELLOW}Настраиваем Samba...${NC}"
-cat <<EOL >> /etc/samba/smb.conf
+# 9. Настройка Samba
+echo -e "${YELLOW}Настраиваем Samba...${NC}"
+
+# Проверяем, существует ли секция [Public] в smb.conf
+if ! grep -q "\[Public\]" /etc/samba/smb.conf; then
+    cat <<EOL >> /etc/samba/smb.conf
 
 [Public]
    path = /Public
    writable = yes
    browseable = yes
    guest ok = yes
+EOL
+fi
+
+# Проверяем, существует ли секция [Protection] в smb.conf
+if ! grep -q "\[Protection\]" /etc/samba/smb.conf; then
+    cat <<EOL >> /etc/samba/smb.conf
 
 [Protection]
    path = /Public/Protection
    valid users = @best
    writable = yes
    browseable = yes
+   guest ok = no
+EOL
+fi
+
+# Проверяем, существует ли секция [Doc] в smb.conf
+if ! grep -q "\[Doc\]" /etc/samba/smb.conf; then
+    cat <<EOL >> /etc/samba/smb.conf
 
 [Doc]
    path = /Public/Doc
    writable = yes
    browseable = yes
    guest ok = yes
+EOL
+fi
+
+# Проверяем, существует ли секция [Buh] в smb.conf
+if ! grep -q "\[Buh\]" /etc/samba/smb.conf; then
+    cat <<EOL >> /etc/samba/smb.conf
 
 [Buh]
    path = /Public/Buh
    valid users = glavbuh, sysadms
    writable = yes
    browseable = yes
+   guest ok = no
 EOL
+fi
 
 # 10. Перезапускаем Samba
 echo -e "${YELLOW}Перезапускаем Samba...${NC}"
