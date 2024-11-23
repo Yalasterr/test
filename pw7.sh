@@ -63,7 +63,14 @@ fi
 
 # 5. Добавляем пользователей director и sysadms в группу best
 echo -e "${YELLOW}Создаем группу best и добавляем пользователей...${NC}"
-addgroup best
+
+if ! getent group best > /dev/null; then
+    echo -e "${YELLOW}Создаем группу best...${NC}"
+    addgroup best
+else
+    echo -e "${GREEN}Группа best уже существует.${NC}"
+fi
+
 usermod -aG best $USERNAME1
 usermod -aG best $USERNAME2
 
