@@ -142,7 +142,7 @@ usermod -aG best $USERNAME2
 echo -e "${YELLOW}Настраиваем Samba...${NC}"
 
 # Проверяем, существует ли секция [Public] в smb.conf
-if ! grep -q "\[Public\]" /etc/samba/smb.conf; then
+if ! grep -q "\[PublicTe\]" /etc/samba/smb.conf; then
     cat <<EOL >> /etc/samba/smb.conf
 
 [PublicTe]
@@ -154,11 +154,11 @@ EOL
 fi
 
 # Проверяем, существует ли секция [Protection] в smb.conf
-if ! grep -q "\[Protection\]" /etc/samba/smb.conf; then
+if ! grep -q "\[ProtectionTe\]" /etc/samba/smb.conf; then
     cat <<EOL >> /etc/samba/smb.conf
 
-[Protection]
-   path = /PublicTe/Protection
+[ProtectionTe]
+   path = /PublicTe/ProtectionTe
    valid users = @best
    writable = yes
    browseable = yes
@@ -167,11 +167,11 @@ EOL
 fi
 
 # Проверяем, существует ли секция [Doc] в smb.conf
-if ! grep -q "\[Doc\]" /etc/samba/smb.conf; then
+if ! grep -q "\[DocTe\]" /etc/samba/smb.conf; then
     cat <<EOL >> /etc/samba/smb.conf
 
-[Doc]
-   path = /PublicTe/Doc
+[DocTe]
+   path = /PublicTe/DocTe
    writable = yes
    browseable = yes
    guest ok = yes
@@ -179,11 +179,11 @@ EOL
 fi
 
 # Проверяем, существует ли секция [Buh] в smb.conf
-if ! grep -q "\[Buh\]" /etc/samba/smb.conf; then
+if ! grep -q "\[BuhTe\]" /etc/samba/smb.conf; then
     cat <<EOL >> /etc/samba/smb.conf
 
-[Buh]
-   path = /PublicTe/Buh
+[BuhTe]
+   path = /PublicTe/BuhTe
    valid users = glavbuh, sysadms
    writable = yes
    browseable = yes
