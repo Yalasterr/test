@@ -77,21 +77,29 @@ read -s PASSWORD
 smbpasswd -a $USERNAMESMB1 $PASSWORD
 #fi
 
-if id "$USERNAMESMB2" &>/dev/null; then
-    echo -e "${RED}Пользователь ${USERNAMESMB2} уже существует.${NC}"
-else
-    echo -e "${YELLOW}Введите пароль для пользователя ${USERNAMESMB2}:${NC}"
-    read -s PASSWORD
-    smbpasswd -a $USERNAMESMB2 $PASSWORD
-fi
+#if id "$USERNAMESMB2" &>/dev/null; then
+#    echo -e "${RED}Пользователь ${USERNAMESMB2} уже существует.${NC}"
+#else
+#    echo -e "${YELLOW}Введите пароль для пользователя ${USERNAMESMB2}:${NC}"
+#    read -s PASSWORD
+#    smbpasswd -a $USERNAMESMB2 $PASSWORD
+#fi
 
-if id "$USERNAMESMB3" &>/dev/null; then
-    echo -e "${RED}Пользователь ${USERNAMESMB3} уже существует.${NC}"
-else
-    echo -e "${YELLOW}Введите пароль для пользователя ${USERNAMESMB3}:${NC}"
-    read -s PASSWORD
-    smbpasswd -a $USERNAMESMB3 $PASSWORD
-fi
+#if id "$USERNAMESMB3" &>/dev/null; then
+#    echo -e "${RED}Пользователь ${USERNAMESMB3} уже существует.${NC}"
+#else
+#    echo -e "${YELLOW}Введите пароль для пользователя ${USERNAMESMB3}:${NC}"
+#    read -s PASSWORD
+#    smbpasswd -a $USERNAMESMB3 $PASSWORD
+#fi
+
+echo -e "${YELLOW}Введите пароль для пользователя ${USERNAMESMB2}:${NC}"
+read -s PASSWORD
+smbpasswd -a $USERNAMESMB2 $PASSWORD
+
+echo -e "${YELLOW}Введите пароль для пользователя ${USERNAMESMB3}:${NC}"
+read -s PASSWORD
+smbpasswd -a $USERNAMESMB3 $PASSWORD
 
 # 5. Добавляем пользователей director и sysadms в группу best
 echo -e "${YELLOW}Создаем группу best и добавляем пользователей...${NC}"
