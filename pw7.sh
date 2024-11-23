@@ -27,9 +27,9 @@ mkdir /PublicTest
 
 # 3. Создаём в Public три каталога: Protection, Doc и Buh
 echo -e "${YELLOW}Создаем подкаталоги в Public...${NC}"
-mkdir /PublicTest/Protection
-mkdir /PublicTest/Doc
-mkdir /PublicTest/Buh
+mkdir /PublicTe/Protection
+mkdir /PublicTe/Doc
+mkdir /PublicTe/Buh
 
 # 4. Добавляем пользователей
 echo -e "${YELLOW}Добавляем пользователей director, sysadms, glavbuh...${NC}"
@@ -123,10 +123,10 @@ fi
 usermod -aG best $USERNAME1
 usermod -aG best $USERNAME2
 
-# 6. Для каталога Protection разрешаем доступ только пользователям группы best
-echo -e "${YELLOW}Настраиваем права доступа для каталога Protection...${NC}"
-chown :best /Public/Protection
-chmod 770 /Public/Protection
+## 6. Для каталога Protection разрешаем доступ только пользователям группы best
+#echo -e "${YELLOW}Настраиваем права доступа для каталога Protection...${NC}"
+#chown :best /Public/Protection
+#chmod 770 /Public/Protection
 
 ## 7. Для каталога Doc установить доступ всем пользователям на чтение и запись
 #echo -e "${YELLOW}Настраиваем права доступа для каталога Doc...${NC}"
@@ -146,7 +146,7 @@ if ! grep -q "\[Public\]" /etc/samba/smb.conf; then
     cat <<EOL >> /etc/samba/smb.conf
 
 [PublicTest]
-   path = /PublicTest
+   path = /PublicTe
    writable = yes
    browseable = yes
    guest ok = yes
@@ -158,7 +158,7 @@ if ! grep -q "\[Protection\]" /etc/samba/smb.conf; then
     cat <<EOL >> /etc/samba/smb.conf
 
 [Protection]
-   path = /PublicTest/Protection
+   path = /PublicTe/Protection
    valid users = @best
    writable = yes
    browseable = yes
@@ -171,7 +171,7 @@ if ! grep -q "\[Doc\]" /etc/samba/smb.conf; then
     cat <<EOL >> /etc/samba/smb.conf
 
 [Doc]
-   path = /PublicTest/Doc
+   path = /PublicTe/Doc
    writable = yes
    browseable = yes
    guest ok = yes
@@ -183,7 +183,7 @@ if ! grep -q "\[Buh\]" /etc/samba/smb.conf; then
     cat <<EOL >> /etc/samba/smb.conf
 
 [Buh]
-   path = /PublicTest/Buh
+   path = /PublicTe/Buh
    valid users = glavbuh, sysadms
    writable = yes
    browseable = yes
