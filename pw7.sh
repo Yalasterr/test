@@ -145,8 +145,8 @@ echo -e "${YELLOW}Настраиваем Samba...${NC}"
 if ! grep -q "\[Public\]" /etc/samba/smb.conf; then
     cat <<EOL >> /etc/samba/smb.conf
 
-[Public]
-   path = /Public
+[PublicTest]
+   path = /PublicTest
    writable = yes
    browseable = yes
    guest ok = yes
@@ -158,7 +158,7 @@ if ! grep -q "\[Protection\]" /etc/samba/smb.conf; then
     cat <<EOL >> /etc/samba/smb.conf
 
 [Protection]
-   path = /Public/Protection
+   path = /PublicTest/Protection
    valid users = @best
    writable = yes
    browseable = yes
@@ -171,7 +171,7 @@ if ! grep -q "\[Doc\]" /etc/samba/smb.conf; then
     cat <<EOL >> /etc/samba/smb.conf
 
 [Doc]
-   path = /Public/Doc
+   path = /PublicTest/Doc
    writable = yes
    browseable = yes
    guest ok = yes
@@ -183,7 +183,7 @@ if ! grep -q "\[Buh\]" /etc/samba/smb.conf; then
     cat <<EOL >> /etc/samba/smb.conf
 
 [Buh]
-   path = /Public/Buh
+   path = /PublicTest/Buh
    valid users = glavbuh, sysadms
    writable = yes
    browseable = yes
