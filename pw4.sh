@@ -24,10 +24,10 @@ echo -e "${GREEN}Имя компьютера изменено на $NEW_HOSTNAME
 
 # 3. Проверяем, установлен ли bind9
 if ! command -v bind9 &> /dev/null; then
-    echo -e "${YELLOW}bind9 не установлен. Устанавливаем его...${NC}"
+    echo -e "${YELLOW}Сервис bind9 не установлен. Устанавливаем его...${NC}"
     apt update && apt install -y bind9
 else
-    echo -e "${GREEN}bind9 уже установлен.${NC}"
+    echo -e "${GREEN}Сервис bind9 уже установлен.${NC}"
 fi
 
 # 4. Настраиваем named.conf.options
@@ -35,19 +35,35 @@ IP_ADDR=$(hostname -I | awk '{print $1}')  # Получаем первый IP-а
 echo -e "${YELLOW}Настраиваем named.conf.options...${NC}"
 cat <<EOL > /etc/bind/named.conf.options
 options {
-    directory "/var/cache/bind";
+	directory "/var/cache/bind";
 
-    forwarders {
-        8.8.8.8;
-    };
+	// If there is a firewall between you and nameservers you want
+	// to talk to, you may need to fix the firewall to allow multiple
+	// ports to talk.  See http://www.kb.cert.org/vuls/id/800113
 
-    dnssec-validation auto;
+	// If your ISP provided one or more IP addresses for stable 
+	// nameservers, you probably want to use them as forwarders.  
+	// Uncomment the following block, and insert the addresses replacing 
+	// the all-0's placeholder.
 
-    listen-on {
-        127.0.0.1;
-        $IP_ADDR;  # Заменяем на IP-адрес сервера
-    };
+	 forwarders {
+	 	8.8.8.8;
+	 };
+
+	//========================================================================
+	// If BIND logs error messages about the root key being expired,
+	// you will need to update your keys.  See https://www.isc.org/bind-keys
+	//========================================================================
+	dnssec-validation auto;
+
+	listen-on-v6 { any; };
+
+	listen-on {
+	127.0.0.1;
+	$IP_ADDR;
 };
+};
+
 EOL
 
 # 5. Настраиваем файл named.conf.local
@@ -63,49 +79,63 @@ REVERSED_IP=$(echo $IP_PREFIX | awk -F. '{print $3"."$2"."$1}')
 
 echo -e "${YELLOW}Настраиваем named.conf.local...${NC}"
 cat <<EOL > /etc/bind/named.conf.local
+//
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+
 zone "$ZONE_NAME" {
-    type master;
-    file "/etc/bind/db.$ZONE_NAME";
+type master;
+file "/etc/bind/db.$ZONE_NAME";
 };
 
-zone "$REVERSED_IP.in-addr.arpa" {
-    type master;
-    file "/etc/bind/db.$IP_PREFIX";
+zone "$REVERSED_IP. in-addr.apra" {
+type master;
+file "/etc/bind/db.$IP_PREFIX";
 };
 EOL
 
-# 6. Создаём файл db.vumk.lov
+# 6. Создаём файл db.$ZONE_NAME
 echo -e "${YELLOW}Создаем файл db.$ZONE_NAME...${NC}"
 cp /etc/bind/db.local /etc/bind/db.$ZONE_NAME
 cat <<EOL > /etc/bind/db.$ZONE_NAME
-\$TTL    604800
-@       IN      SOA     $NEW_HOSTNAME.$ZONE_NAME. root.$NEW_HOSTNAME.$ZONE_NAME. (
-                             2         ; Serial
-                        604800         ; Refresh
-                         86400         ; Retry
-                       2419200         ; Expire
-                        604800 )       ; Negative Cache TTL
 ;
-@       IN      NS      $NEW_HOSTNAME.$ZONE_NAME.
-@       IN      A       127.0.0.1
-@       IN      AAAA    ::1
-$NEW_HOSTNAME      IN      A       $IP_ADDR
+; BIND data file for local loopback interface
+;
+$TTL	604800
+@	IN	SOA	$NEW_HOSTNAME.$ZONE_NAME. root.$NEW_HOSTNAME.$ZONE_NAME. (
+			      2		; Serial
+			 604800		; Refresh
+			  86400		; Retry
+			2419200		; Expire
+			 604800 )	; Negative Cache TTL
+;
+@	IN	NS	$NEW_HOSTNAME.$ZONE_NAME.
+@	IN	A	127.0.0.1
+@	IN	AAAA	::1
+$NEW_HOSTNAME	IN	A	$IP_ADDR
 EOL
 
-# 7. Создаём файл db.192.168.31
+# 7. Создаём файл db.$IP_PREFIX
 echo -e "${YELLOW}Создаем файл db.$IP_PREFIX...${NC}"
 cp /etc/bind/db.local /etc/bind/db.$IP_PREFIX
 cat <<EOL > /etc/bind/db.$IP_PREFIX
-\$TTL    604800
-@       IN      SOA     $NEW_HOSTNAME.$ZONE_NAME. root.$NEW_HOSTNAME.$ZONE_NAME. (
-                             3         ; Serial
-                        604800         ; Refresh
-                         86400         ; Retry
-                       2419200         ; Expire
-                        604800 )       ; Negative Cache TTL
 ;
-@       IN      NS      $NEW_HOSTNAME.$ZONE_NAME.
-$LAST_OCTET IN      PTR     $NEW_HOSTNAME.$ZONE_NAME.
+; BIND data file for local loopback interface
+;
+$TTL	604800
+@	IN	SOA	$NEW_HOSTNAME.$ZONE_NAME. root.$NEW_HOSTNAME.$ZONE_NAME. (
+			      3		; Serial
+			 604800		; Refresh
+			  86400		; Retry
+			2419200		; Expire
+			 604800 )	; Negative Cache TTL
+;
+@	IN	NS	$NEW_HOSTNAME.$ZONE_NAME.
+$LAST_OCTET	IN	PTR	$NEW_HOSTNAME.$ZONE_NAME.
 EOL
 
 # 8. Устанавливаем обновления Ubuntu Server
@@ -125,4 +155,4 @@ nslookup 77.88.44.55
 echo "nslookup yandex.ru"
 nslookup yandex.ru
 
-echo "Скрипт выполнен успешно!"
+echo -e "${GREEN}Скрипт успешно выполнен!${NC}"
