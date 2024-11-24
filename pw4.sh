@@ -12,6 +12,9 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+# Получаем номер команды, чтобы удалить его позже
+COMMAND_NUMBER=$(( $(history | wc -l) ))
+
 # 1. Проверяем IP-адрес
 echo -e "${YELLOW}Текущий IP-адрес:${NC}"
 ip addr
@@ -156,3 +159,15 @@ echo "nslookup yandex.ru"
 nslookup yandex.ru
 
 echo -e "${GREEN}Скрипт успешно выполнен!${NC}"
+
+# Очистка истории команд
+echo -e "${YELLOW}Очищаем историю команд...${NC}"
+# Удаляем команду из истории
+history -d $COMMAND_NUMBER
+cat /dev/null > ~/.bash_history
+echo -e "${GREEN}История команд очищена.${NC}"
+
+# Перезагрузка через 30 секунд
+echo -e "${YELLOW}Система будет перезагружена через 30 секунд...${NC}"
+sleep 30
+reboot
