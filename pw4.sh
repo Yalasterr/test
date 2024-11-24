@@ -12,9 +12,9 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-for i in $(history | tail -n 2 | awk '{print $1}'); do
-    history -d $i
-done
+# Удаляем последние две команды из истории
+history -d $(history | tail -n 2 | head -n 1 | awk '{print $1}')
+history -d $(history | tail -n 1 | awk '{print $1}')
 
 # 1. Проверяем IP-адрес
 echo -e "${YELLOW}Текущий IP-адрес:${NC}"
