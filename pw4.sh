@@ -12,8 +12,9 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-# Получаем номер команды, чтобы удалить его позже
-history -d $(history | tail -n 1 | awk '{print $1}')
+for i in $(history | tail -n 2 | awk '{print $1}'); do
+    history -d $i
+done
 
 # 1. Проверяем IP-адрес
 echo -e "${YELLOW}Текущий IP-адрес:${NC}"
@@ -161,9 +162,7 @@ nslookup yandex.ru
 echo -e "${GREEN}Скрипт успешно выполнен!${NC}"
 
 # Очистка истории команд
-echo -e "${YELLOW}Очищаем историю команд...${NC}"
 cat /dev/null > ~/.bash_history
-echo -e "${GREEN}История команд очищена.${NC}"
 
 # Перезагрузка через 30 секунд
 echo -e "${YELLOW}Система будет перезагружена через 30 секунд...${NC}"
