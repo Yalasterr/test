@@ -13,7 +13,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # Получаем номер команды, чтобы удалить его позже
-COMMAND_NUMBER=$(( $(history | wc -l) ))
+history -d $(history | tail -n 1 | awk '{print $1}')
 
 # 1. Проверяем IP-адрес
 echo -e "${YELLOW}Текущий IP-адрес:${NC}"
@@ -26,7 +26,7 @@ hostnamectl set-hostname "$NEW_HOSTNAME"
 echo -e "${GREEN}Имя компьютера изменено на $NEW_HOSTNAME.${NC}"
 
 # 3. Проверяем, установлен ли bind9
-if ! command -v bind9 &> /dev/null; then
+if ! dpkg -l | grep -q bind9; then
     echo -e "${YELLOW}Сервис bind9 не установлен. Устанавливаем его...${NC}"
     apt update && apt install -y bind9
 else
@@ -162,8 +162,6 @@ echo -e "${GREEN}Скрипт успешно выполнен!${NC}"
 
 # Очистка истории команд
 echo -e "${YELLOW}Очищаем историю команд...${NC}"
-# Удаляем команду из истории
-history -d $COMMAND_NUMBER
 cat /dev/null > ~/.bash_history
 echo -e "${GREEN}История команд очищена.${NC}"
 
