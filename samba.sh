@@ -142,4 +142,4 @@ systemctl restart smbd
 echo -e "${GREEN}Скрипт выполнен успешно! Теперь вы можете подключиться к созданным каталогам из Windows 10.${NC}"
 
 IP_ADDR=$(hostname -I | awk '{print $1}')  # Получаем первый IP-адрес
-echo -e "${YELLOW}\\$IP_ADDR${NC}"
+echo -e "${YELLOW}\\$IP_ADDR.${NC}"
