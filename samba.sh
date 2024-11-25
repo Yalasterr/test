@@ -79,6 +79,11 @@ fi
 usermod -aG best $USERNAME1
 usermod -aG best $USERNAME2
 
+# Выдаём права на каталоги
+chmod 777 /Public/Protection
+chmod 777 /Public/Buh
+chmod 777 /Public/Doc
+
 # 9. Настройка Samba
 echo -e "${YELLOW}Настраиваем Samba...${NC}"
 
@@ -142,4 +147,4 @@ systemctl restart smbd
 echo -e "${GREEN}Скрипт выполнен успешно! Теперь вы можете подключиться к созданным каталогам из Windows 10.${NC}"
 
 IP_ADDR=$(hostname -I | awk '{print $1}')  # Получаем первый IP-адрес
-echo -e "${YELLOW}'\\$IP_ADDR'${NC}"
+echo -e "${YELLOW}  $IP_ADDR${NC}"
