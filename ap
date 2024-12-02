@@ -1,0 +1,106 @@
+Практическая работа №8
+
+Тема: Публикация сайтов на Aрасне2
+Цель: Научиться публиковать сайты на Apache2
+
+Выполнение работы:
+    1. Устанавливаем службу Apache2
+        sudo apt install apache2
+    2. Проверяем статус работы apache2
+        sudo service apache2 status
+    3. Отображаем в браузере сайт apache2 сайт по умолчанию
+        Открываем браузер и прописываем свой ip-адрес
+    4. Создаём сайт в любом текстовом редакторе с заголовком: «Я обещаю учиться отлично по МДК02» и сохранить файл с именем index.hnml  в предварительно созданной папке self
+        cd /var/www
+        sudo mkdir self.vol
+        sudo nano /self.vol/index.html
+            <html>
+                <head>
+                    <mata chepset="UTF-8">
+                    <title>Self</title>
+                </head>
+                <body>
+                    <h1>Я обещаю учиться отлично по МДК02</h1>
+                </body>
+            </html>
+    5. Сохраняем страницу сайта указанного преподавателем в предварительно созданную папку other
+        cd /var/www
+        sudo mkdir other.vol
+        переносим сохранённые файлы в каталог other.vol 
+    6. Опубликовать обе страницы на сервере в apache2, таким образом чтобы по ip адресу сервера открывалась созданная страница сайта
+        cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/self.vol.conf
+        sudo nano /etc/apache2/sites-available/self.vol.conf 
+            <VirtualHost *:80>
+	            # The ServerName directive sets the request scheme, hostname and port that
+	            # the server uses to identify itself. This is used when creating
+	            # redirection URLs. In the context of virtual hosts, the ServerName
+	            # specifies what hostname must appear in the request's Host: header to
+	            # match this virtual host. For the default virtual host (this file) this
+	            # value is not decisive as it is used as a last resort host regardless.
+	            # However, you must set it for any further virtual host explicitly.
+	            #ServerName www.example.com
+
+	            ServerAdmin webmaster@localhost
+                ServerName self.vol
+	            DocumentRoot /var/www/self.vol
+
+	            # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+	            # error, crit, alert, emerg.
+	            # It is also possible to configure the loglevel for particular
+	            # modules, e.g.
+	            #LogLevel info ssl:warn
+
+	            ErrorLog ${APACHE_LOG_DIR}/error.log
+	            CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+	            # For most configuration files from conf-available/, which are
+	            # enabled or disabled at a global level, it is possible to
+	            # include a line for only one particular virtual host. For example the
+	            # following line enables the CGI configuration for this host only
+	            # after it has been globally disabled with "a2disconf".
+	            #Include conf-available/serve-cgi-bin.conf
+            </VirtualHost>
+
+        cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/other.vol.conf
+        sudo nano /etc/apache2/sites-available/other.vol.conf 
+            <VirtualHost *:80>
+	            # The ServerName directive sets the request scheme, hostname and port that
+	            # the server uses to identify itself. This is used when creating
+	            # redirection URLs. In the context of virtual hosts, the ServerName
+	            # specifies what hostname must appear in the request's Host: header to
+	            # match this virtual host. For the default virtual host (this file) this
+	            # value is not decisive as it is used as a last resort host regardless.
+	            # However, you must set it for any further virtual host explicitly.
+	            #ServerName www.example.com
+
+	            ServerAdmin webmaster@localhost
+                ServerName other.vol
+	            DocumentRoot /var/www/other.vol
+
+	            # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+	            # error, crit, alert, emerg.
+	            # It is also possible to configure the loglevel for particular
+	            # modules, e.g.
+	            #LogLevel info ssl:warn
+
+	            ErrorLog ${APACHE_LOG_DIR}/error.log
+	            CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+	            # For most configuration files from conf-available/, which are
+	            # enabled or disabled at a global level, it is possible to
+	            # include a line for only one particular virtual host. For example the
+	            # following line enables the CGI configuration for this host only
+	            # after it has been globally disabled with "a2disconf".
+	            #Include conf-available/serve-cgi-bin.conf
+            </VirtualHost>
+
+
+        sudo a2dissite 000-default.conf
+        sudo a2ensite self.vol.conf
+        sudo a2ensite other.vol.conf
+
+        sudo servise apache2 restart
+    7. Проверяем открытие сайта с другого компьютера или ноутбука по локальной сети
+        Открываем браузер и прописываем свой ip-адрес
+
+Вывод: Я научился публиковать сайты на Apache2
