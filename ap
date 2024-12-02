@@ -104,3 +104,42 @@
         Открываем браузер и прописываем свой ip-адрес
 
 Вывод: Я научился публиковать сайты на Apache2
+
+
+
+
+<html>
+    <head>
+        <meta charset="UTF-8"> <!-- Исправлена опечатка в "meta" и "charset" -->
+        <title>Self</title>
+        <style>
+            h1 {
+                color: blue; /* Задайте нужный цвет текста */
+                text-align: center; /* Выровнять текст по центру */
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Я обещаю учиться отлично по МДК02</h1>
+    </body>
+</html>
+
+
+
+red
+green
+blue
+yellow
+orange
+purple
+pink
+black
+white
+gray (или grey)
+cyan
+magenta
+brown
+lime
+navy
+teal
+maroon
